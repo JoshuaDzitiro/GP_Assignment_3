@@ -11,7 +11,6 @@ public class FullTree extends Tree{
     
     public FullTree(int depth){
         super(depth);
-        this.create((Function)root, 1);
     }
     public FullTree(int depth, Node root){
         super(depth, root);
@@ -24,7 +23,7 @@ public class FullTree extends Tree{
             for(int i = 0; i < parent.arity; i ++){
                 parent.children[i] = new Function();
                 Function temp = (Function)parent.children[i];
-                int rand = main.Random.getNext(Node.functionSetSize);
+                int rand = 0;
                 
                 temp.name = rand;
                 temp.arity = Node.aritySet[rand];
@@ -37,6 +36,7 @@ public class FullTree extends Tree{
             for(int i = 0; i < parent.arity; i ++){
                 parent.children[i] = new Terminal();
                 Terminal temp = (Terminal)parent.children[i];
+                //System.out.println(Node.terminalSet);
                 temp.value = main.Random.getNext(Node.terminalSet);
                 
             }

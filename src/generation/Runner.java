@@ -8,7 +8,6 @@ package generation;
 import java.util.ArrayList;
 import oparator.Oparators;
 import population.Population;
-import population.Selection;
 import trees.Tree;
 
 /**
@@ -26,6 +25,9 @@ public class Runner {
             System.out.println(g+"th Generation");
             ArrayList<Tree> generation = population.population;
             winner = generation.get(0);
+            
+            //System.gc();
+            
             //check for winner
             for (int i = 0; i < generation.size(); i++) {
                 if(winner.hitsRatio() > generation.get(i).hitsRatio()){
@@ -61,6 +63,7 @@ public class Runner {
             //System.out.println(newGen.size());
             population.population = newGen;
             //create a new generation
+            System.gc();
         }
 
         return winner;

@@ -7,6 +7,7 @@ import node.Node;
 import node.Function;
 import node.Terminal;
 import main.Random;
+import node.Towers;
 import oparator.OparationData;
 
 /**
@@ -17,29 +18,45 @@ public abstract class Tree {
     protected int depth;
     public final Node root;
     private int rawFitness = 0;
-    private int HitsRatio = 0;
-    private boolean isEvaluated = false;
+    private int hitsRatio = 0;
     public boolean isIDGen = false;
     public int numberOfNodes = 0;
+    public Towers towers;
     
     public Tree(int depth){
+        towers = new Towers();
         this.depth = depth;
-        int rand = main.Random.getNext(Node.functionSetSize);
+        int rand = 0;
         root = new Function();
         ((Function)root).name = rand;
         ((Function)root).arity = Node.aritySet[rand];
+        create((Function)root, 1);
+        solve((Function)root);
+        
+        int raw = towers.numberOfDisk - towers.tower[2].size();
+        rawFitness = raw * 2 * towers.numberOfDisk;
+        
+        hitsRatio = raw;
+        
+        //towers.print();
+        
     }
     
     public Tree(int depth, Node root){
+        towers = new Towers();
         this.depth = depth;
         this.root = root;
+        solve((Function)root);
+        
+        int raw = towers.numberOfDisk - towers.tower[2].size();
+        rawFitness = raw * 2 * towers.numberOfDisk;
+        
+        hitsRatio = raw;
     }
     
     public int getDepth() {
         return depth;
     }
-    
-    public void create(){}
     
     public void CalculateDepth(){
     
@@ -99,20 +116,75 @@ public abstract class Tree {
     }
     
     public int hitsRatio(){
-        return 0;
+        return hitsRatio;
     }
     
     public int rawFitness(){
-    
-        int miss = 0;
-        
-        return miss;
+        return rawFitness;
     }
     
-    private void check(Node node, int set,byte[] trace){
+    protected void solve(Function function){
         
-        
+        //check if the left child is a terminal
+        if(!function.children[0].isFunction){
+            int from = ((Terminal)function.children[0]).value;
+            //check if the right child is a terminal the get the value
+            if(!function.children[1].isFunction){
+                int to = ((Terminal)function.children[1]).value;
+                move(from, to);
+            }
+            else{
+                solve((Function)function.children[1]);
+                int to = getLeftMost((Function)function.children[1]);
+                move(from, to);
+            }
+            
+        }
+        //check if the right child is a terminal
+        else if(!function.children[1].isFunction){
+            int to = ((Terminal)function.children[1]).value;
+            //check if the right child is a terminal the get the value
+            if(!function.children[0].isFunction){
+                int from = ((Terminal)function.children[0]).value;
+                move(from, to);
+            }
+            else{
+                solve((Function)function.children[0]);
+                int from = getRightMost((Function)function.children[0]);
+                move(from, to);
+            }
+        }
+        else{
+            solve((Function)(function.children[0]));
+            solve((Function)(function.children[1]));
+        }
        
+    }
+    
+    public void printTower(){
+        towers.print();
+    }
+    
+    private void move(int from, int to){
+        //System.out.println(from+" "+to);
+        towers.move(from, to);
+    }
+    
+    private int getLeftMost(Function function){
+        if(!function.children[0].isFunction){
+            return ((Terminal)function.children[0]).value;
+        }
+        else{
+            return getLeftMost((Function)function.children[0]);
+        }
+    }
+    private int getRightMost(Function function){
+        if(!function.children[1].isFunction){
+            return ((Terminal)function.children[1]).value;
+        }
+        else{
+            return getRightMost((Function)function.children[1]);
+        }
     }
     
     public Tree clone(){

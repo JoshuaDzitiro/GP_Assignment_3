@@ -12,7 +12,6 @@ public class GrowTree extends Tree{
 
     public GrowTree(int depth) {
         super(depth);
-        create((Function)root, 1);
     }
     
     @Override

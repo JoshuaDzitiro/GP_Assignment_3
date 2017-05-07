@@ -1,0 +1,8 @@
+seed 5000744885
+populationSize 10000
+maxDepth 8
+maxSubTree 5
+tournamentSize 150
+numberOfGenerations 100
+operators 12 40 48
+numberOfDisks 4
